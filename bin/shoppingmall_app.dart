@@ -46,10 +46,13 @@ class ShoppingmallApp {
         return;
       }
 
+      //중복된 물건이 담길 때
       if (cartName.contains(name)) {
-        int index = cartName.indexOf(name);
-        print('$name는 리스트의 $index 번호입니다.'); // 번호가 제대로 출력되는지 확인
-        cartQuantity[index] += quantity;
+        int indexCart = cartName.indexOf(name);
+        print(
+          '$name는 장바구니의 ${indexCart + 1} 번째 물품입니다.',
+        ); // 중복된 물량을 기입 시 번호가 제대로 출력되는지 확인
+        cartQuantity[indexCart] += quantity;
       } else {
         cartName.add(name);
         cartQuantity.add(quantity);
@@ -63,11 +66,16 @@ class ShoppingmallApp {
 
   void showTotal() {
     int total = 0;
+    int itemPriceTotal = 0;
     for (int i = 0; i < cartName.length; i++) {
       String item = cartName[i];
-      int quantity = cartQuantity[i];
-      int price = productPrice[productName.indexOf(item)];
-      total += price * quantity;
+      int itemQuantity = cartQuantity[i];
+      int itemPrice = productPrice[productName.indexOf(item)];
+      itemPriceTotal = itemPrice * itemQuantity;
+      total += itemPrice * itemQuantity;
+      print(
+        ' ${i + 1}번 $item의 수량은 $itemQuantity개 / $itemPriceTotal원 입니다.',
+      ); //장바구니에 있는 아이템과 수량 출력, total은 누적이라 가격 변수를 하나 더 만들 수 밖에 없었음
     }
     print('총합: ${total}원입니다!');
   }
@@ -93,7 +101,7 @@ void main() {
     print('환영합니다, 사용자님');
     while (isLoggedIn) {
       print(
-        '\n[1] 상품 목록 보기 / [2] 장바구니에 담기 / [3] 총 가격 보기 / [4] 종료 / [6] 장바구니 비우기',
+        '\n[1] 상품 목록 보기 / [2] 장바구니에 담기 / [3] 장바구니 Item 보기 / [4] 종료 / [6] 장바구니 비우기',
       );
       stdout.write('번호 입력: ');
       var input = stdin.readLineSync();
@@ -109,13 +117,13 @@ void main() {
           shoppingmallApp.showTotal();
           break;
         case '4':
-          print('\n정말로 종료하시겠습니까? \n[5번] 누르면 진짜 종료');
+          print('\n정말로 종료하시겠습니까? \n[5] 누르면 진짜 종료');
           stdout.write('번호 입력: ');
           var inputClose = stdin.readLineSync();
           int closeNumber = int.parse(inputClose!);
           if (closeNumber == 5) {
             print('\n이용해주셔서 감사합니다.');
-            print('\n안녕히가세요');
+            print('안녕히가세요\n');
             isLoggedIn = false;
             break;
           } else {
