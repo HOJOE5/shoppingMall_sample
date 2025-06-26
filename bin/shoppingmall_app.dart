@@ -48,6 +48,7 @@ class ShoppingmallApp {
 
       if (cartName.contains(name)) {
         int index = cartName.indexOf(name);
+        print('$name는 리스트의 $index 번호입니다.'); // 번호가 제대로 출력되는지 확인
         cartQuantity[index] += quantity;
       } else {
         cartName.add(name);
@@ -70,31 +71,65 @@ class ShoppingmallApp {
     }
     print('총합: ${total}원입니다!');
   }
+
+  // 장바구니 비우기 여부 추가
+  void removeAllitems() {
+    stdout.write('\n장바구니를 비우겠습니까? (Y/N) ');
+    String? inputCart = stdin.readLineSync();
+
+    if (inputCart != null && inputCart.toUpperCase() == 'Y') {
+      cartName.clear();
+      cartQuantity.clear();
+      print('\n장바구니를 비웠습니다.');
+      return;
+    }
+  }
 }
 
 void main() {
   ShoppingmallApp shoppingmallApp = ShoppingmallApp();
+  bool isLoggedIn = true;
+  if (isLoggedIn) {
+    print('환영합니다, 사용자님');
+    while (isLoggedIn) {
+      print(
+        '\n[1] 상품 목록 보기 / [2] 장바구니에 담기 / [3] 총 가격 보기 / [4] 종료 / [6] 장바구니 비우기',
+      );
+      stdout.write('번호 입력: ');
+      var input = stdin.readLineSync();
 
-  while (true) {
-    print('\n[1] 상품 목록 보기 / [2] 장바구니에 담기 / [3] 총 가격 보기 / [4] 종료');
-    stdout.write('번호 입력: ');
-    var input = stdin.readLineSync();
+      switch (input) {
+        case '1':
+          shoppingmallApp.showProducts();
+          break;
+        case '2':
+          shoppingmallApp.addToCart();
+          break;
+        case '3':
+          shoppingmallApp.showTotal();
+          break;
+        case '4':
+          print('\n정말로 종료하시겠습니까? \n[5번] 누르면 진짜 종료');
+          stdout.write('번호 입력: ');
+          var inputClose = stdin.readLineSync();
+          int closeNumber = int.parse(inputClose!);
+          if (closeNumber == 5) {
+            print('\n이용해주셔서 감사합니다.');
+            print('\n안녕히가세요');
+            isLoggedIn = false;
+            break;
+          } else {
+            print('종료하지 않습니다.');
+            break;
+          }
 
-    switch (input) {
-      case '1':
-        shoppingmallApp.showProducts();
-        break;
-      case '2':
-        shoppingmallApp.addToCart();
-        break;
-      case '3':
-        shoppingmallApp.showTotal();
-        break;
-      case '4':
-        print('안녕히 가세요!');
-        return;
-      default:
-        print('잘못된 입력입니다.');
+        case '6':
+          shoppingmallApp.removeAllitems();
+          break;
+
+        default:
+          print('잘못된 입력입니다.');
+      }
     }
   }
 }
